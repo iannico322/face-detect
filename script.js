@@ -1,9 +1,7 @@
 const video = document.getElementById("video");
 
 Promise.all([
-  faceapi.nets.ssdMobilenetv1.loadFromUri("/models/ssd_mobilenetv1_model-weights_manifest.json"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("/models/face_recognition_model-weights_manifest.json"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models/face_landmark_68_model-weights_manifest.json")
+  faceapi.nets.ssdMobilenetv1.loadFromUri("https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection/dist/models/ssd_mobilenetv1_model-weights_manifest.json")
 ]).then(startWebcam);
 
 function startWebcam() {
