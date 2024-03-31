@@ -1,7 +1,9 @@
 const video = document.getElementById("video");
 
 Promise.all([
-  faceapi.nets.ssdMobilenetv1.loadFromUri("https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection/dist/models/ssd_mobilenetv1_model-weights_manifest.json")
+  faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+  faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
 ]).then(startWebcam);
 
 function startWebcam() {
@@ -19,12 +21,12 @@ function startWebcam() {
 }
 
 function getLabeledFaceDescriptions() {
-  const labels = ["Nico", "Mark"];
+  const labels = ["Felipe", "Messi", "Data"];
   return Promise.all(
     labels.map(async (label) => {
       const descriptions = [];
       for (let i = 1; i <= 2; i++) {
-        const img = await faceapi.fetchImage(`./labels/${label}/${i}.jpg`);
+        const img = await faceapi.fetchImage(`./labels/${label}/${i}.png`);
         const detections = await faceapi
           .detectSingleFace(img)
           .withFaceLandmarks()
