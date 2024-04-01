@@ -1,10 +1,18 @@
 const video = document.getElementById("video");
+const MODEL_URL = "/models";
+const LABELS = ["Nico", "Mark"];
+const INTERVAL_MS = 100;
+let isStopped = false;
+let detectedNames = new Set();
 
 Promise.all([
-  faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
-  faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-]).then(startWebcam);
+  faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+  faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+  faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+]).then(startWebcam)
+  .catch((error) => {
+    console.error("Error loading models:", error);
+  });
 
 function startWebcam() {
   navigator.mediaDevices
@@ -16,21 +24,24 @@ function startWebcam() {
       video.srcObject = stream;
     })
     .catch((error) => {
-      console.error(error);
+      console.error("Error starting webcam:", error);
     });
 }
 
-function getLabeledFaceDescriptions() {
-  const labels = ["Nico","Mark"];
+async function getFaceDescriptor(img) {
+  return faceapi
+    .detectSingleFace(img)
+    .withFaceLandmarks()
+    .withFaceDescriptor();
+}
+
+async function getLabeledFaceDescriptions() {
   return Promise.all(
-    labels.map(async (label) => {
+    LABELS.map(async (label) => {
       const descriptions = [];
       for (let i = 1; i <= 2; i++) {
         const img = await faceapi.fetchImage(`./labels/${label}/${i}.jpg`);
-        const detections = await faceapi
-          .detectSingleFace(img)
-          .withFaceLandmarks()
-          .withFaceDescriptor();
+        const detections = await getFaceDescriptor(img);
         descriptions.push(detections.descriptor);
       }
       return new faceapi.LabeledFaceDescriptors(label, descriptions);
@@ -48,7 +59,12 @@ video.addEventListener("play", async () => {
   const displaySize = { width: video.width, height: video.height };
   faceapi.matchDimensions(canvas, displaySize);
 
-  setInterval(async () => {
+  const intervalId = setInterval(async () => {
+    if (isStopped) {
+      clearInterval(intervalId);
+      return;
+    }
+
     const detections = await faceapi
       .detectAllFaces(video)
       .withFaceLandmarks()
@@ -63,10 +79,16 @@ video.addEventListener("play", async () => {
     });
     results.forEach((result, i) => {
       const box = resizedDetections[i].detection.box;
-      const drawBox = new faceapi.draw.DrawBox(box, {
-        label: result,
-      });
+      const drawBox = new faceapi.draw.DrawBox(box, { label: result.toString() });
       drawBox.draw(canvas);
+      detectedNames.add(result.label);
     });
-  }, 100);
+    console.log(Array.from(detectedNames));
+  }, INTERVAL_MS);
 });
+
+// Function to stop the face recognition
+function stopRecognition() {
+
+  
+}
