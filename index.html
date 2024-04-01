@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>DICT | Face detection</title>
-  <script defer src="face-api.min.js"></script>
-  <script defer src="script.js"></script>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Face detection</title>
+    <script defer src="face-api.min.js"></script>
+    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="main">
         <div class="vid">
-        <video id="video"  autoplay></video>
+            <video id="video" width="600" height="450" autoplay></video>
+        </div>
+        <div class="option">
+            <div class="grid-item">Status: Active</div>
+            <img class="grid-item" onclick="switchCamera()" src="./cached.png" alt="">
+        </div>
     </div>
-    <div class="option">
-        <div>Status: Active</div>
-        <button>Stop</button>
-        <img src="./cached.png" alt="">
-    </div>
-    </div>
-    
-  
+
+    <script>
+        
+      
+        // Call the function to switch the camera
+        function switchCamera(){
+            console.log("switch")
+        }
+    </script>
 </body>
 </html>
