@@ -1,5 +1,5 @@
 const video = document.getElementById("video");
-const MODEL_URL = "/models";
+const MODEL_URL = "/face-detect/models";
 const LABELS = ["Nico", "Mark"];
 const INTERVAL_MS = 100;
 let isStopped = false;
